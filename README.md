@@ -2,7 +2,10 @@
 
 * [I added Lighthouse Scores to my Site’s Footer and You Can Too](https://www.zachleat.com/web/lighthouse-in-footer/)
 * Related blog post: [Use Speedlify to Continuously Measure Site Performance](https://www.zachleat.com/web/speedlify/)
-* [Speedlify Demo](https://www.speedlify.dev/zachleat.com/)
+
+## Demo
+
+* [`<speedlify-score>` Demo](https://zachleat.github.io/speedlify-score/demo.html) using [speedlify.dev instance](https://www.speedlify.dev/)
 
 ## Usage
 
