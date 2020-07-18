@@ -14,10 +14,7 @@ npm install speedlify-score
 
 ### Include Sources
 
-Include the following in your page:
-
-* `speedlify-score.js`
-* `speedlify-score.css`
+Include `speedlify-score.js` and `speedlify-score.css` in your page (preferably concatenated in via a build script).
 
 ### Use Markup
 
