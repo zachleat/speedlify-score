@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<style>
+			body {
+				font-family: system-ui, sans-serif;
+			}
+		</style>
+		<link rel="stylesheet" href="speedlify-score.css">
+		<script src="speedlify-score.js"></script>
+	</head>
+	<body>
+		<h1>Speedlify Score Demos</h1>
+		<h2>With `hash`</h2>
+		<p><speedlify-score speedlify-url="https://www.speedlify.dev/" hash="bbfa43c1"></speedlify-score></p>
+		<h2>With `url` (Slower)</h2>
+		<p><speedlify-score speedlify-url="https://www.speedlify.dev/" url="https://www.zachleat.com/web/"></speedlify-score></p>
+		<p><speedlify-score speedlify-url="https://www.speedlify.dev/" url="https://www.11ty.dev/"></speedlify-score></p>
+		<h2>Without `url` or `hash` (Slower), uses current page</h2>
+		<p><speedlify-score speedlify-url="https://www.speedlify.dev/"></speedlify-score></p>
+	</body>
+</html>
