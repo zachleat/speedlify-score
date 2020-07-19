@@ -41,10 +41,11 @@
 		connectedCallback() {
 			this.speedlifyUrl = this.getAttribute("speedlify-url");
 			this.shorthash = this.getAttribute("hash");
+			this.rawData = this.getAttribute("raw-data");
 			this.url = this.getAttribute("url") || window.location.href;
 			this.urlStore = urlStore;
 
-			if(!this.speedlifyUrl) {
+			if(!this.rawData && !this.speedlifyUrl) {
 				console.log(`Missing \`speedlify-url\` attributes in <${NAME}>`);
 				return;
 			}
@@ -54,6 +55,11 @@
 		}
 
 		async init() {
+			if(this.rawData) {
+				this.innerHTML = this.render(JSON.parse(this.rawData));
+				return;
+			}
+
 			let hash = this.shorthash;
 			if(!hash) {
 				// It’s much faster if you supply a `hash` attribute!
