@@ -94,10 +94,10 @@
 
 		render(data) {
 			let scores = [];
-			scores.push(`<span title="Performance" class="${this.getScoreClass(data.lighthouse.performance)}">${data.lighthouse.performance * 100}</span>`);
-			scores.push(`<span title="Accessibility" class="${this.getScoreClass(data.lighthouse.accessibility)}">${data.lighthouse.accessibility * 100}</span>`);
-			scores.push(`<span title="Best Practices" class="${this.getScoreClass(data.lighthouse.bestPractices)}">${data.lighthouse.bestPractices * 100}</span>`);
-			scores.push(`<span title="SEO" class="${this.getScoreClass(data.lighthouse.seo)}">${data.lighthouse.seo * 100}</span>`);
+			scores.push(`<span title="Performance" class="${this.getScoreClass(data.lighthouse.performance)}">${parseInt(data.lighthouse.performance * 100, 10)}</span>`);
+			scores.push(`<span title="Accessibility" class="${this.getScoreClass(data.lighthouse.accessibility)}">${parseInt(data.lighthouse.accessibility * 100, 10)}</span>`);
+			scores.push(`<span title="Best Practices" class="${this.getScoreClass(data.lighthouse.bestPractices)}">${parseInt(data.lighthouse.bestPractices * 100, 10)}</span>`);
+			scores.push(`<span title="SEO" class="${this.getScoreClass(data.lighthouse.seo)}">${parseInt(data.lighthouse.seo * 100, 10)}</span>`);
 
 			let content = [];
 			content.push(`<span class="speedlify-summary">${data.weight.summary}</span>`);
