@@ -1,6 +1,6 @@
 {
   "name": "speedlify-score",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A web component to show Lighthouse scores via Speedlify",
   "main": "speedlify-score.js",
   "scripts": {},
