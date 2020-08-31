@@ -92,17 +92,41 @@
 			return "speedlify-score speedlify-score-good";
 		}
 
-		render(data) {
+		getScoreTemplate(data) {
 			let scores = [];
 			scores.push(`<span title="Performance" class="${this.getScoreClass(data.lighthouse.performance)}">${parseInt(data.lighthouse.performance * 100, 10)}</span>`);
 			scores.push(`<span title="Accessibility" class="${this.getScoreClass(data.lighthouse.accessibility)}">${parseInt(data.lighthouse.accessibility * 100, 10)}</span>`);
 			scores.push(`<span title="Best Practices" class="${this.getScoreClass(data.lighthouse.bestPractices)}">${parseInt(data.lighthouse.bestPractices * 100, 10)}</span>`);
 			scores.push(`<span title="SEO" class="${this.getScoreClass(data.lighthouse.seo)}">${parseInt(data.lighthouse.seo * 100, 10)}</span>`);
+			return scores.join(" ");
+		}
 
+		render(data) {
 			let content = [];
-			content.push(`<span class="speedlify-summary">${data.weight.summary}</span>`);
-			content.push(`<span>${scores.join("")}</span>`);
-			return content.join(" ");
+			let scoreHtml = this.getScoreTemplate(data);
+			if(!this.hasAttribute("requests") && !this.hasAttribute("weight") && !this.hasAttribute("rank") || this.hasAttribute("score")) {
+				content.push(scoreHtml);
+			}
+
+			let summarySplit = data.weight.summary.split(" • ");
+			if(this.hasAttribute("requests")) {
+				content.push(`<span class="speedlify-requests">${summarySplit[0]}</span>`);
+			}
+			if(this.hasAttribute("weight")) {
+				content.push(`<span class="speedlify-weight">${summarySplit[1]}</span>`);
+			}
+			if(this.hasAttribute("rank")) {
+				let rankUrl = this.getAttribute("rank-url");
+				let delta = "";
+				if(this.hasAttribute("rank-change") && data.previousRanks) {
+					let change = data.previousRanks.cumulative - data.ranks.cumulative;
+					delta = ` <span class="speedlify-rank-change ${change > 0 ? "up" : (change < 0 ? "down" : "same")}">${change !== 0 ? change : ""}</span>`;
+				}
+				content.push(`<${rankUrl ? `a href="${rankUrl}"` : "span"} class="speedlify-rank">${data.ranks.cumulative}</${rankUrl ? "a" : "span"}>`);
+				content.push(delta);
+			}
+
+			return content.join("");
 		}
 	});
 })();

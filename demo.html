@@ -16,11 +16,20 @@
 	<body>
 		<h1>Speedlify Score Demos</h1>
 		<h2>Go back to <a href="https://www.github.com/zachleat/speedlify-score/">source code</a>.</h2>
-		<h2>With `hash`</h2>
+		<h2>With <code>hash</code></h2>
 		<p><speedlify-score speedlify-url="https://www.speedlify.dev/" hash="bbfa43c1"></speedlify-score></p>
+		<h2>Using attributes to customize output</h2>
+		<h3>No <code>requests</code>, using <code>rank-url</code></h3>
+		<p><speedlify-score speedlify-url="https://www.11ty.dev/speedlify" hash="5b15e2ed" weight rank rank-change score rank-url="https://www.11ty.dev/speedlify/"></speedlify-score></p>
+		<h3>No attributes (default behavior)</h3>
+		<p><speedlify-score speedlify-url="https://www.speedlify.dev/" hash="bbfa43c1"></speedlify-score></p>
+		<h3>No scores</h3>
+		<p><speedlify-score speedlify-url="https://www.speedlify.dev/" hash="bbfa43c1" requests weight rank></speedlify-score></p>
+		<h3>All attributes</h3>
+		<p><speedlify-score speedlify-url="https://www.speedlify.dev/" hash="bbfa43c1" requests weight rank rank-change score></speedlify-score></p>
 		<h2>With `url` (Slower)</h2>
-		<p><speedlify-score speedlify-url="https://www.speedlify.dev/" url="https://www.zachleat.com/web/"></speedlify-score></p>
-		<p><speedlify-score speedlify-url="https://www.speedlify.dev/" url="https://www.11ty.dev/"></speedlify-score></p>
+		<p><speedlify-score speedlify-url="https://www.speedlify.dev/" url="https://www.zachleat.com/web/" rank-listing-url="https://www.speedlify.dev/zachleat.com/"></speedlify-score></p>
+		<p><speedlify-score speedlify-url="https://www.speedlify.dev/" url="https://www.11ty.dev/" rank-listing-url="https://www.speedlify.dev/ssg/"></speedlify-score></p>
 		<h2>Without `url` or `hash` (Slower), uses current page</h2>
 		<p><speedlify-score speedlify-url="https://www.speedlify.dev/"></speedlify-score></p>
 		<h2>Put a link around it</h2>

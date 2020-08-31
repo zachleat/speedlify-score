@@ -41,3 +41,17 @@ Required attributes:
 <!-- Slower method, but doesn’t require hash -->
 <speedlify-score speedlify-url="https://www.speedlify.dev/" url="https://www.11ty.dev/">
 ```
+
+#### Use Attributes to customize output
+
+* If no attributes are used, it `score` is implicit and default.
+* If some attributes are in play, you must explicitly add `score`.
+* `requests`
+* `weight`
+* `rank`
+* `rank-change` (difference between old and new rank)
+
+## Changelog
+
+* `v1.0.0`: First release
+* `v2.0.0`: Changes default render behavior (only shows Lighthouse scores by default, summary and weight are not). Adds feature to use attributes to customize output if you want to opt-in to more.

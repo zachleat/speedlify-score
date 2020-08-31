@@ -1,11 +1,9 @@
 {
   "name": "speedlify-score",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "A web component to show Lighthouse scores via Speedlify",
   "main": "speedlify-score.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zachleat/speedlify-score.git"
