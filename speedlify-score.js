@@ -117,13 +117,11 @@
 			}
 			if(this.hasAttribute("rank")) {
 				let rankUrl = this.getAttribute("rank-url");
-				let delta = "";
-				if(this.hasAttribute("rank-change") && data.previousRanks) {
-					let change = data.previousRanks.cumulative - data.ranks.cumulative;
-					delta = ` <span class="speedlify-rank-change ${change > 0 ? "up" : (change < 0 ? "down" : "same")}">${change !== 0 ? change : ""}</span>`;
-				}
 				content.push(`<${rankUrl ? `a href="${rankUrl}"` : "span"} class="speedlify-rank">${data.ranks.cumulative}</${rankUrl ? "a" : "span"}>`);
-				content.push(delta);
+			}
+			if(this.hasAttribute("rank-change") && data.previousRanks) {
+				let change = data.previousRanks.cumulative - data.ranks.cumulative;
+				content.push(`<span class="speedlify-rank-change ${change > 0 ? "up" : (change < 0 ? "down" : "same")}">${change !== 0 ? Math.abs(change) : ""}</span>`);
 			}
 
 			return content.join("");
