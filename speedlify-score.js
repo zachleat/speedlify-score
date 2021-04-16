@@ -12,13 +12,18 @@
 			this.urls = {};
 		}
 
+		static normalizeUrl(speedlifyUrl, path) {
+			let host = `${speedlifyUrl}${speedlifyUrl.endsWith("/") ? "" : "/"}`
+			return host + (path.startsWith("/") ? path.substr(1) : path);
+		}
+
 		async fetch(speedlifyUrl, url) {
 			if(this.urls[speedlifyUrl]) {
 				return this.urls[speedlifyUrl][url] ? this.urls[speedlifyUrl][url].hash : false;
 			}
 
 			if(!this.fetches[speedlifyUrl]) {
-				this.fetches[speedlifyUrl] = fetch(`${speedlifyUrl}/api/urls.json`);
+				this.fetches[speedlifyUrl] = fetch(SpeedlifyUrlStore.normalizeUrl(speedlifyUrl, "api/urls.json"));
 			}
 
 			let response = await this.fetches[speedlifyUrl];
@@ -76,7 +81,7 @@
 		}
 
 		async fetchData(hash) {
-			let response = await fetch(`${this.speedlifyUrl}/api/${hash}.json`);
+			let response = await fetch(SpeedlifyUrlStore.normalizeUrl(this.speedlifyUrl, `api/${hash}.json`));
 			let json = await response.json();
 
 			return json;
