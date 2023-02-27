@@ -3,8 +3,6 @@
 		return;
 	}
 
-	const NAME = "speedlify-score";
-
 	class SpeedlifyUrlStore {
 		constructor() {
 			this.fetches = {};
@@ -42,7 +40,7 @@
 
 	const urlStore = new SpeedlifyUrlStore();
 
-	customElements.define(NAME, class extends HTMLElement {
+	customElements.define("speedlify-score", class extends HTMLElement {
 		connectedCallback() {
 			this.speedlifyUrl = this.getAttribute("speedlify-url");
 			this.shorthash = this.getAttribute("hash");
@@ -51,7 +49,7 @@
 			this.urlStore = urlStore;
 
 			if(!this.rawData && !this.speedlifyUrl) {
-				console.log(`Missing \`speedlify-url\` attributes in <${NAME}>`);
+				console.log(`Missing \`speedlify-url\` attributes in <speedlify-score>`);
 				return;
 			}
 
@@ -74,7 +72,7 @@
 			}
 
 			if(!hash) {
-				console.error( `<${NAME}> could not find hash for URL: ${this.url}` );
+				console.error( `<speedlify-score> could not find hash for URL: ${this.url}` );
 				return;
 			}
 
