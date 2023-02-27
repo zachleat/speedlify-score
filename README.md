@@ -55,3 +55,4 @@ Required attributes:
 
 * `v1.0.0`: First release
 * `v2.0.0`: Changes default render behavior (only shows Lighthouse scores by default, summary and weight are not). Adds feature to use attributes to customize output if you want to opt-in to more.
+* `v3.0.0`: Removes `flex-wrap: wrap` for top level component.
