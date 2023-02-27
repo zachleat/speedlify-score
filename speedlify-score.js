@@ -62,7 +62,7 @@
 		async init() {
 			if(this.rawData) {
 				let data = JSON.parse(this.rawData);
-				this.setTimeAttributes(data);
+				this.setDateAttributes(data);
 				this.innerHTML = this.render(data);
 				return;
 			}
@@ -79,7 +79,7 @@
 			}
 
 			let data = await this.fetchData(hash);
-			this.setTimeAttributes(data);
+			this.setDateAttributes(data);
 			this.innerHTML = this.render(data);
 		}
 
@@ -90,16 +90,12 @@
 			return json;
 		}
 
-		setTimeAttributes(data) {
-			if(data.timestamp) {
-				this.setAttribute("title", `Results from ${this.timeAgo(data.timestamp)}`);
-				this.setAttribute("data-timestamp", data.timestamp)
+		setDateAttributes(data) {
+			if(!("Intl" in window) || !Intl.DateTimeFormat || !data.timestamp) {
+				return;
 			}
-		}
-
-		timeAgo(timestamp) {
-			let days = Math.floor((new Date() - timestamp) / (1000*60*60*24));
-			return `${days} day${days != 1 ? "s" : ""} ago`;
+			const date = new Intl.DateTimeFormat().format(new Date(data.timestamp));
+			this.setAttribute("title", `Results from ${date}`);
 		}
 
 		getScoreClass(score) {
