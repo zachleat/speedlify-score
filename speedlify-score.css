@@ -1,12 +1,11 @@
 speedlify-score {
 	display: flex;
-	flex-wrap: wrap;
 	align-items: center;
 }
 /* The Lighthouse scoring circles */
 .speedlify-score {
 	font-size: 0.8125em; /* 13px /16 */
-	width: 2.6em;
+	min-width: 2.6em;
 	height: 2.6em;
 	line-height: 1;
 	display: inline-flex;
