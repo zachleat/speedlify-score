@@ -118,7 +118,7 @@
 		render(data) {
 			let content = [];
 			let scoreHtml = this.getScoreTemplate(data);
-			if(!this.hasAttribute("requests") && !this.hasAttribute("weight") && !this.hasAttribute("rank") || this.hasAttribute("score")) {
+			if(!this.hasAttribute("requests") && !this.hasAttribute("weight") && !this.hasAttribute("rank") && !this.hasAttribute("rank-change") || this.hasAttribute("score")) {
 				content.push(scoreHtml);
 			}
 
