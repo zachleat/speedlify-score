@@ -43,6 +43,7 @@ class SpeedlifyScore extends HTMLElement {
 
 	static css = `
 :host {
+	--speedlify-internal-circle: var(--speedlify-circle);
 	display: flex;
 	align-items: center;
 	gap: 0.375em; /* 6px /16 */
@@ -56,8 +57,8 @@ class SpeedlifyScore extends HTMLElement {
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
-	border: 2px solid #0cce6b;
-	color: #088645;
+	border: 0.15384615em solid var(--speedlify-internal-circle, #0cce6b); /* 2px /13 */
+	color: var(--speedlify-internal-circle, #088645);
 }
 .circle-ok {
 	color: #ffa400;
