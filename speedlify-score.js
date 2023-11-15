@@ -76,8 +76,12 @@ class SpeedlifyScore extends HTMLElement {
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
-	border: 0.15384615em solid var(--_circle, #0cce6b); /* 2px /13 */
-	color: var(--_circle, #088645);
+	border: 0.15384615em solid currentColor; /* 2px /13 */
+	color: var(--_circle, #666);
+}
+.circle-good {
+	color: #088645;
+	border-color: #0cce6b;
 }
 .circle-ok {
 	color: #ffa400;
@@ -134,8 +138,12 @@ class SpeedlifyScore extends HTMLElement {
 		this.init();
 	}
 
-	_initTemplate(data) {
+	_initTemplate(data, forceRerender = false) {
+		if(this.shadowRoot && !forceRerender) {
+			return;
+		}
 		if(this.shadowRoot) {
+			this.shadowRoot.innerHTML = this.render(data);
 			return;
 		}
 
@@ -158,7 +166,11 @@ class SpeedlifyScore extends HTMLElement {
 		}
 
 		let hash = this.shorthash;
+		let forceRerender = false;
 		if(!hash) {
+			this._initTemplate(); // skeleton render
+			forceRerender = true;
+
 			// It’s much faster if you supply a `hash` attribute!
 			hash = await urlStore.fetchHash(this.speedlifyUrl, this.url);
 		}
@@ -168,10 +180,16 @@ class SpeedlifyScore extends HTMLElement {
 			return;
 		}
 
+		// Hasn’t already rendered.
+		if(!forceRerender) {
+			this._initTemplate(); // skeleton render
+			forceRerender = true;
+		}
+
 		let data = await urlStore.fetchData(this.speedlifyUrl, hash);
 		this.setDateAttributes(data);
 
-		this._initTemplate(data);
+		this._initTemplate(data, forceRerender);
 	}
 
 	setDateAttributes(data) {
@@ -183,6 +201,9 @@ class SpeedlifyScore extends HTMLElement {
 	}
 
 	getScoreClass(score) {
+		if(score === "" || score === undefined) {
+			return "circle";
+		}
 		if(score < .5) {
 			return "circle circle-bad";
 		}
@@ -192,36 +213,36 @@ class SpeedlifyScore extends HTMLElement {
 		return "circle circle-good";
 	}
 
-	getScoreHtml(title, value) {
-		return `<span title="${title}" class="${this.getScoreClass(value)}">${parseInt(value * 100, 10)}</span>`;
+	getScoreHtml(title, value = "") {
+		return `<span title="${title}" class="${this.getScoreClass(value)}">${value ? parseInt(value * 100, 10) : "…"}</span>`;
 	}
 
-	render(data) {
+	render(data = {}) {
 		let attrs = SpeedlifyScore.attrs;
 		let content = [];
 
 		// no extra attributes
 		if(!this.hasAttribute(attrs.requests) && !this.hasAttribute(attrs.weight) && !this.hasAttribute(attrs.rank) && !this.hasAttribute(attrs.rankChange) || this.hasAttribute(attrs.score)) {
-			content.push(this.getScoreHtml("Performance", data.lighthouse.performance));
-			content.push(this.getScoreHtml("Accessibility", data.lighthouse.accessibility));
-			content.push(this.getScoreHtml("Best Practices", data.lighthouse.bestPractices));
-			content.push(this.getScoreHtml("SEO", data.lighthouse.seo));
+			content.push(this.getScoreHtml("Performance", data.lighthouse?.performance));
+			content.push(this.getScoreHtml("Accessibility", data.lighthouse?.accessibility));
+			content.push(this.getScoreHtml("Best Practices", data.lighthouse?.bestPractices));
+			content.push(this.getScoreHtml("SEO", data.lighthouse?.seo));
 		}
 
 		let meta = [];
-		let summarySplit = data.weight.summary.split(" • ");
-		if(this.hasAttribute(attrs.requests)) {
+		let summarySplit = data.weight?.summary?.split(" • ") || [];
+		if(this.hasAttribute(attrs.requests) && summarySplit.length) {
 			meta.push(`<span class="requests">${summarySplit[0]}</span>`);
 		}
-		if(this.hasAttribute(attrs.weight)) {
+		if(this.hasAttribute(attrs.weight) && summarySplit.length) {
 			meta.push(`<span class="weight">${summarySplit[1]}</span>`);
 		}
 		if(this.hasAttribute(attrs.rank)) {
 			let rankUrl = this.getAttribute("rank-url");
-			meta.push(`<${rankUrl ? `a href="${rankUrl}"` : "span"} class="rank">${data.ranks.cumulative}</${rankUrl ? "a" : "span"}>`);
+			meta.push(`<${rankUrl ? `a href="${rankUrl}"` : "span"} class="rank">${data.ranks?.cumulative}</${rankUrl ? "a" : "span"}>`);
 		}
 		if(this.hasAttribute(attrs.rankChange) && data.previousRanks) {
-			let change = data.previousRanks.cumulative - data.ranks.cumulative;
+			let change = data.previousRanks?.cumulative - data.ranks?.cumulative;
 			meta.push(`<span class="rank-change ${change > 0 ? "up" : (change < 0 ? "down" : "same")}">${change !== 0 ? Math.abs(change) : ""}</span>`);
 		}
 		if(meta.length) {
