@@ -10,26 +10,33 @@ class SpeedlifyUrlStore {
 		return host + (path.startsWith("/") ? path.substr(1) : path);
 	}
 
-	async fetch(speedlifyUrl, url) {
+	async fetchFromApi(apiUrl) {
+		if(!this.fetches[apiUrl]) {
+			this.fetches[apiUrl] = fetch(apiUrl);
+		}
+
+		let response = await this.fetches[apiUrl];
+		if(!this.responses[apiUrl]) {
+			this.responses[apiUrl] = response.json();
+		}
+		let json = await this.responses[apiUrl];
+		return json;
+	}
+
+	async fetchHash(speedlifyUrl, url) {
 		if(this.urls[speedlifyUrl]) {
 			return this.urls[speedlifyUrl][url] ? this.urls[speedlifyUrl][url].hash : false;
 		}
 
-		if(!this.fetches[speedlifyUrl]) {
-			this.fetches[speedlifyUrl] = fetch(SpeedlifyUrlStore.normalizeUrl(speedlifyUrl, "api/urls.json"));
-		}
-
-		let response = await this.fetches[speedlifyUrl];
-
-		if(!this.responses[speedlifyUrl]) {
-			this.responses[speedlifyUrl] = response.json();
-		}
-
-		let json = await this.responses[speedlifyUrl];
-
-		this.urls[speedlifyUrl] = json;
+		let apiUrl = SpeedlifyUrlStore.normalizeUrl(speedlifyUrl, "api/urls.json");
+		let json = await this.fetchFromApi(apiUrl);
 
 		return json[url] ? json[url].hash : false;
+	}
+
+	async fetchData(speedlifyUrl, hash) {
+		let apiUrl = SpeedlifyUrlStore.normalizeUrl(speedlifyUrl, `api/${hash}.json`);
+		return this.fetchFromApi(apiUrl);
 	}
 }
 
@@ -41,9 +48,21 @@ class SpeedlifyScore extends HTMLElement {
 		customElements.define(tagName || "speedlify-score", SpeedlifyScore);
 	}
 
+	static attrs = {
+		url: "url",
+		speedlifyUrl: "speedlify-url",
+		hash: "hash",
+		rawData: "raw-data",
+		requests: "requests",
+		weight: "weight",
+		rank: "rank",
+		rankChange: "rank-change",
+		score: "score",
+	}
+
 	static css = `
 :host {
-	--speedlify-internal-circle: var(--speedlify-circle);
+	--_circle: var(--speedlify-circle);
 	display: flex;
 	align-items: center;
 	gap: 0.375em; /* 6px /16 */
@@ -57,8 +76,8 @@ class SpeedlifyScore extends HTMLElement {
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
-	border: 0.15384615em solid var(--speedlify-internal-circle, #0cce6b); /* 2px /13 */
-	color: var(--speedlify-internal-circle, #088645);
+	border: 0.15384615em solid var(--_circle, #0cce6b); /* 2px /13 */
+	color: var(--_circle, #088645);
 }
 .circle-ok {
 	color: #ffa400;
@@ -101,13 +120,13 @@ class SpeedlifyScore extends HTMLElement {
 			return;
 		}
 
-		this.speedlifyUrl = this.getAttribute("speedlify-url");
-		this.shorthash = this.getAttribute("hash");
-		this.rawData = this.getAttribute("raw-data");
-		this.url = this.getAttribute("url") || window.location.href;
+		this.speedlifyUrl = this.getAttribute(SpeedlifyScore.attrs.speedlifyUrl);
+		this.shorthash = this.getAttribute(SpeedlifyScore.attrs.hash);
+		this.rawData = this.getAttribute(SpeedlifyScore.attrs.rawData);
+		this.url = this.getAttribute(SpeedlifyScore.attrs.url) || window.location.href;
 
 		if(!this.rawData && !this.speedlifyUrl) {
-			console.log(`Missing \`speedlify-url\` attribute:`, this);
+			console.error(`Missing \`${SpeedlifyScore.attrs.speedlifyUrl}\` attribute:`, this);
 			return;
 		}
 
@@ -141,7 +160,7 @@ class SpeedlifyScore extends HTMLElement {
 		let hash = this.shorthash;
 		if(!hash) {
 			// It’s much faster if you supply a `hash` attribute!
-			hash = await urlStore.fetch(this.speedlifyUrl, this.url);
+			hash = await urlStore.fetchHash(this.speedlifyUrl, this.url);
 		}
 
 		if(!hash) {
@@ -149,17 +168,10 @@ class SpeedlifyScore extends HTMLElement {
 			return;
 		}
 
-		let data = await this.fetchData(hash);
+		let data = await urlStore.fetchData(this.speedlifyUrl, hash);
 		this.setDateAttributes(data);
 
 		this._initTemplate(data);
-	}
-
-	async fetchData(hash) {
-		let response = await fetch(SpeedlifyUrlStore.normalizeUrl(this.speedlifyUrl, `api/${hash}.json`));
-		let json = await response.json();
-
-		return json;
 	}
 
 	setDateAttributes(data) {
@@ -180,35 +192,35 @@ class SpeedlifyScore extends HTMLElement {
 		return "circle circle-good";
 	}
 
-	getScoreTemplate(data) {
-		let scores = [];
-		scores.push(`<span title="Performance" class="${this.getScoreClass(data.lighthouse.performance)}">${parseInt(data.lighthouse.performance * 100, 10)}</span>`);
-		scores.push(`<span title="Accessibility" class="${this.getScoreClass(data.lighthouse.accessibility)}">${parseInt(data.lighthouse.accessibility * 100, 10)}</span>`);
-		scores.push(`<span title="Best Practices" class="${this.getScoreClass(data.lighthouse.bestPractices)}">${parseInt(data.lighthouse.bestPractices * 100, 10)}</span>`);
-		scores.push(`<span title="SEO" class="${this.getScoreClass(data.lighthouse.seo)}">${parseInt(data.lighthouse.seo * 100, 10)}</span>`);
-		return scores.join(" ");
+	getScoreHtml(title, value) {
+		return `<span title="${title}" class="${this.getScoreClass(value)}">${parseInt(value * 100, 10)}</span>`;
 	}
 
 	render(data) {
+		let attrs = SpeedlifyScore.attrs;
 		let content = [];
-		let scoreHtml = this.getScoreTemplate(data);
-		if(!this.hasAttribute("requests") && !this.hasAttribute("weight") && !this.hasAttribute("rank") && !this.hasAttribute("rank-change") || this.hasAttribute("score")) {
-			content.push(scoreHtml);
+
+		// no extra attributes
+		if(!this.hasAttribute(attrs.requests) && !this.hasAttribute(attrs.weight) && !this.hasAttribute(attrs.rank) && !this.hasAttribute(attrs.rankChange) || this.hasAttribute(attrs.score)) {
+			content.push(this.getScoreHtml("Performance", data.lighthouse.performance));
+			content.push(this.getScoreHtml("Accessibility", data.lighthouse.accessibility));
+			content.push(this.getScoreHtml("Best Practices", data.lighthouse.bestPractices));
+			content.push(this.getScoreHtml("SEO", data.lighthouse.seo));
 		}
 
 		let meta = [];
 		let summarySplit = data.weight.summary.split(" • ");
-		if(this.hasAttribute("requests")) {
+		if(this.hasAttribute(attrs.requests)) {
 			meta.push(`<span class="requests">${summarySplit[0]}</span>`);
 		}
-		if(this.hasAttribute("weight")) {
+		if(this.hasAttribute(attrs.weight)) {
 			meta.push(`<span class="weight">${summarySplit[1]}</span>`);
 		}
-		if(this.hasAttribute("rank")) {
+		if(this.hasAttribute(attrs.rank)) {
 			let rankUrl = this.getAttribute("rank-url");
 			meta.push(`<${rankUrl ? `a href="${rankUrl}"` : "span"} class="rank">${data.ranks.cumulative}</${rankUrl ? "a" : "span"}>`);
 		}
-		if(this.hasAttribute("rank-change") && data.previousRanks) {
+		if(this.hasAttribute(attrs.rankChange) && data.previousRanks) {
 			let change = data.previousRanks.cumulative - data.ranks.cumulative;
 			meta.push(`<span class="rank-change ${change > 0 ? "up" : (change < 0 ? "down" : "same")}">${change !== 0 ? Math.abs(change) : ""}</span>`);
 		}
