@@ -237,13 +237,15 @@ class SpeedlifyScore extends HTMLElement {
 		if(this.hasAttribute(attrs.weight) && summarySplit.length) {
 			meta.push(`<span class="weight">${summarySplit[1]}</span>`);
 		}
-		if(this.hasAttribute(attrs.rank)) {
-			let rankUrl = this.getAttribute("rank-url");
-			meta.push(`<${rankUrl ? `a href="${rankUrl}"` : "span"} class="rank">${data.ranks?.cumulative}</${rankUrl ? "a" : "span"}>`);
-		}
-		if(this.hasAttribute(attrs.rankChange) && data.previousRanks) {
-			let change = data.previousRanks?.cumulative - data.ranks?.cumulative;
-			meta.push(`<span class="rank-change ${change > 0 ? "up" : (change < 0 ? "down" : "same")}">${change !== 0 ? Math.abs(change) : ""}</span>`);
+		if(data.ranks?.cumulative) {
+			if(this.hasAttribute(attrs.rank)) {
+				let rankUrl = this.getAttribute("rank-url");
+				meta.push(`<${rankUrl ? `a href="${rankUrl}"` : "span"} class="rank">${data.ranks?.cumulative}</${rankUrl ? "a" : "span"}>`);
+			}
+			if(this.hasAttribute(attrs.rankChange) && data.previousRanks) {
+				let change = data.previousRanks?.cumulative - data.ranks?.cumulative;
+				meta.push(`<span class="rank-change ${change > 0 ? "up" : (change < 0 ? "down" : "same")}">${change !== 0 ? Math.abs(change) : ""}</span>`);
+			}
 		}
 		if(meta.length) {
 			content.push(`<span class="meta">${meta.join("")}</span>`)
