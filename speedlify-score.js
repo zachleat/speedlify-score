@@ -80,16 +80,16 @@ class SpeedlifyScore extends HTMLElement {
 	color: var(--_circle, #666);
 }
 .circle-good {
-	color: #088645;
-	border-color: #0cce6b;
+	color: var(--_circle, #088645);
+	border-color: var(--_circle, #0cce6b);
 }
 .circle-ok {
-	color: #ffa400;
-	border-color: currentColor;
+	color: var(--_circle, #ffa400);
+	border-color: var(--_circle, currentColor);
 }
 .circle-bad {
-	color: #ff4e42;
-	border-color: currentColor;
+	color: var(--_circle, #ff4e42);
+	border-color: var(--_circle, currentColor);
 }
 .meta {
 	display: flex;
