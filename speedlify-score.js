@@ -63,6 +63,8 @@ class SpeedlifyScore extends HTMLElement {
 	static css = `
 :host {
 	--_circle: var(--speedlify-circle);
+	--_circleText: var(--speedlify-text, var(--speedlify-circle));
+	--_circleBorder: var(--speedlify-border, var(--speedlify-circle));
 	display: flex;
 	align-items: center;
 	gap: 0.375em; /* 6px /16 */
@@ -77,19 +79,19 @@ class SpeedlifyScore extends HTMLElement {
 	justify-content: center;
 	border-radius: 50%;
 	border: 0.15384615em solid currentColor; /* 2px /13 */
-	color: var(--_circle, #666);
+	color: var(--_circleText, #666);
 }
 .circle-good {
-	color: var(--_circle, #088645);
-	border-color: var(--_circle, #0cce6b);
+	color: var(--_circleText, #088645);
+	border-color: var(--_circleBorder, #0cce6b);
 }
 .circle-ok {
-	color: var(--_circle, #ffa400);
-	border-color: var(--_circle, currentColor);
+	color: var(--_circleText, #ffa400);
+	border-color: var(--_circleBorder, #ffa400);
 }
 .circle-bad {
-	color: var(--_circle, #ff4e42);
-	border-color: var(--_circle, currentColor);
+	color: var(--_circleText, #ff4e42);
+	border-color: var(--_circleBorder, #ff4e42);
 }
 .meta {
 	display: flex;
