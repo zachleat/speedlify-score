@@ -70,7 +70,7 @@ class SpeedlifyScore extends HTMLElement {
 	gap: 0.375em; /* 6px /16 */
 }
 .circle {
-	font-size: 0.525em; /* 13px /16 */
+	font-size: 0.8125em; /* 13px /16 */
 	min-width: 2.6em;
 	height: 2.6em;
 	line-height: 1;
