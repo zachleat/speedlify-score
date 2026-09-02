@@ -1,5 +1,9 @@
 # speedlify-score Web Component
 
+> [!TIP]
+> _A newer version of `speedlify-score` is available!_
+> Check out [**`speedlify2-score`**](https://github.com/zachleat/speedlify2/tree/main/packages/speedlify2-score), improved for [`speedlify2`](https://github.com/zachleat/speedlify2). Note that speedlify2 does maintain backwards compatibility with this component version (but the newer one is recommended).
+
 * [I added Lighthouse Scores to my Site’s Footer and You Can Too](https://www.zachleat.com/web/lighthouse-in-footer/)
 * Related blog post: [Use Speedlify to Continuously Measure Site Performance](https://www.zachleat.com/web/speedlify/)
 
